@@ -4,6 +4,7 @@ import joblib
 import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, matthews_corrcoef, roc_auc_score
 import time
 
 
@@ -33,7 +34,7 @@ try:
     st.sidebar.download_button(
         label="⬇ Download Testing Dataset (2 MB)",
         data=test_data,
-        file_name="adult_test.csv",
+        file_name="adult.test",
         mime="text/csv"
     )
 except:
@@ -136,9 +137,26 @@ if uploaded_file:
 
     with col3:
         st.markdown("### 📝 Classification Report")
-        report = classification_report(y, predictions, output_dict=True)
-        report_df = pd.DataFrame(report).transpose()
-        st.dataframe(report_df.round(3))
+        # Calculate metrics
+        accuracy = accuracy_score(y, predictions)
+        precision = precision_score(y, predictions)
+        recall = recall_score(y, predictions)
+        f1 = f1_score(y, predictions)
+        mcc = matthews_corrcoef(y, predictions)
+
+        try:
+            y_prob = model.predict_proba(X)[:, 1]
+            auc = roc_auc_score(y, y_prob)
+        except:
+            auc = "N/A"
+
+        metrics_df = pd.DataFrame({
+            "Metric": ["Accuracy", "Precision", "Recall", "F1 Score", "MCC", "AUC"],
+            "Value": [accuracy, precision, recall, f1, mcc, auc]
+        })
+
+        st.markdown("### 📊 Performance Summary")
+        st.dataframe(metrics_df)
 
     with col4:
         st.markdown("### 🔥 Confusion Matrix")
