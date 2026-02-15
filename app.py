@@ -29,7 +29,7 @@ st.markdown("""
 st.sidebar.header("📁 Dataset Downloads")
 
 try:
-    test_data = open("data/download_file/adult_test.csv", "rb").read()
+    test_data = open("data/download_file/adult.test", "rb").read()
     st.sidebar.download_button(
         label="⬇ Download Testing Dataset (2 MB)",
         data=test_data,
